@@ -7,4 +7,8 @@ declare global {
       PORT?: string;
     }
   }
+
+  interface ResponseError extends Error {
+    status?: number;
+  }
 }
