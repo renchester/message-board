@@ -1,11 +1,17 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import createError from 'http-errors';
 
 import apiRouter from './routes/api';
+import {
+  errorLogger,
+  errorResponder,
+  invalidPathHandler,
+} from './middleware/errorHandlers';
 
 dotenv.config();
 
@@ -34,8 +40,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Redirect to api route
 app.get('/', (req, res) => {
-  res.redirect('/api');
+  res.redirect('/api/messages');
 });
+
+// API route handler
 app.use('/api', apiRouter);
+
+// Catch 404 and forward to error handler
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// Log the error
+app.use(errorLogger);
+
+// Respond to the error
+app.use(errorResponder);
+
+// Send response for invalid paths
+app.use(invalidPathHandler);
 
 export default app;
