@@ -6,20 +6,19 @@ import Message from '../models/message';
 
 const router = express.Router();
 
+const getAllMessages = async (req, res, next) => {
+  const messages = await Message.find({}, { __v: 0 })
+    .sort({ date_created: 1 })
+    .exec();
+
+  res.json({ messages: messages });
+};
+
 // Redirect to messages route
 router.get('/', (req, res) => res.redirect('/api/messages'));
 
 // GET all messages
-router.get(
-  '/messages',
-  asyncHandler(async (req, res, next) => {
-    const messages = await Message.find({}, { __v: 0 })
-      .sort({ date_created: -1 })
-      .exec();
-
-    res.json({ messages: messages });
-  }),
-);
+router.get('/messages', asyncHandler(getAllMessages));
 
 // POST request fro creating new message
 router.post('/messages', [
@@ -38,7 +37,7 @@ router.post('/messages', [
     .escape(),
 
   // Process request after validation and sanitization.
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
@@ -55,6 +54,7 @@ router.post('/messages', [
       // Data from form is valid.
       // Save message.
       await message.save();
+      getAllMessages(req, res, next);
     }
   }),
 ]);
