@@ -17,8 +17,6 @@ router.get(
       .sort({ date_created: -1 })
       .exec();
 
-    //   res.render('index', { title: 'Mini Message Board', messages });
-    console.log(messages);
     res.json({ messages: messages });
   }),
 );
@@ -39,7 +37,7 @@ router.post('/messages', [
     .isLength({ min: 1 })
     .escape(),
 
-  // Process requesdt after validation and sanitization.
+  // Process request after validation and sanitization.
   asyncHandler(async (req, res) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
@@ -57,8 +55,6 @@ router.post('/messages', [
       // Data from form is valid.
       // Save message.
       await message.save();
-
-      res.redirect('/api/messages');
     }
   }),
 ]);
