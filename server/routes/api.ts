@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
 import { body, validationResult } from 'express-validator';
 
@@ -6,7 +6,11 @@ import Message from '../models/message';
 
 const router = express.Router();
 
-const getAllMessages = async (req, res, next) => {
+const getAllMessages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const messages = await Message.find({}, { __v: 0 })
     .sort({ date_created: 1 })
     .exec();
@@ -37,7 +41,7 @@ router.post('/messages', [
     .escape(),
 
   // Process request after validation and sanitization.
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
