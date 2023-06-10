@@ -1,5 +1,4 @@
 import format from 'date-fns/format';
-import unescape from 'validator/lib/unescape';
 
 type MessageProps = {
   message: Message;
@@ -23,7 +22,7 @@ const Message = (props: MessageProps) => {
   return (
     <div className="message">
       <div className="message__content" style={styles}>
-        {unescape(message.message)}
+        {message.message}
       </div>
       <div className="message__username">{message.username}</div>
       <small className="message__date">{formattedDate}</small>
